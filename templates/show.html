@@ -1,0 +1,8 @@
+<!doctype html>
+<title>Threads</title>
+<body>
+Hi
+{% for post in posts %}
+<li><h2>{{ post.title }}: {{ post.timestamp }}</h2>{{ post.content }}</li>
+{% endfor %}
+</body>
