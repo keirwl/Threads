@@ -1,3 +1,10 @@
+.DS_store
+threads_*.txt
 *.pyc
 venv/*
-.DS_store
+flask*
+jinja2*
+itsdangerous*
+markupsafe*
+werkzeug*
+
