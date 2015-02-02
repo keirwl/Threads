@@ -6,7 +6,7 @@ from google.appengine.ext import ndb
 app = Flask(__name__)
 app.debug = True
 
-SECRET_KEY = "lol wut"
+SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
