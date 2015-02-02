@@ -5,7 +5,7 @@ Threads (code name only, liable to change) is a platform for discussions, with k
 2. The medium should not constrain the message.
 3. The message has the right to be forgotten.
 
-There's an increasing expectation that our online lives should be permanently recorded and associated with our offline identities. The egalitarian ideal, that the internet is a place where everyone is equally able to express themselves and their creations, is in reality often hampered by the loudest and most powerful voices silencing minority opinion. Identities lead to egos, egos lead to **us-vs-them** mentalities, prejudice and exclusion.
+There's an increasing expectation that our online lives should be permanently recorded and associated with our offline identities. The egalitarian ideal, that the internet is a place where everyone is equally able to express themselves and their creations, is in reality often hampered by the loudest and most powerful voices silencing minority opinion. Identities lead to egos, egos lead to *us-vs-them* mentalities, prejudice and exclusion.
 
 Threads aims to enable discussions and cultures free from these problems.
 
