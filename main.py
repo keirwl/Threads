@@ -21,7 +21,7 @@ class Thread(ndb.Model):
     ident = ndb.StringProperty(required=True)
     salt = ndb.StringProperty(required=True)
     title = ndb.StringProperty(required=True)
-    opening_post = ndb.StructuredProperty(Post, required=True)
+    op = ndb.StructuredProperty(Post, required=True)
 
 def salt():
     return urlsafe_b64encode(urandom(64)).decode()
@@ -42,14 +42,15 @@ def show():
 def show_thread(thread_ident):
     thread = Thread.query(Thread.ident == thread_ident).get()
     if thread == None: abort(404)
-    return render_template("thread.html", thread=thread)
+    posts = Post.query(ancestor=thread.key).fetch()
+    return render_template("thread.html", thread=thread, posts=posts, num=len(posts))
 
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
     thread_key = ndb.Key(urlsafe=request.form["urlkey"])
-    post = Post(content=request.form["content"], parent=request.form["urlkey"])
+    post_key = Post(content=request.form["content"], parent=thread_key).put()
 
-    return render_template("posted.html", ident="", return_url=thread_ident)
+    return render_template("posted.html", ident="", return_url="../"+thread_ident)
 
 @app.route("/add")
 def post_form():
@@ -58,7 +59,7 @@ def post_form():
 @app.route("/post", methods=["POST"])
 def add_thread():
     thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
-        opening_post=Post(content=request.form["content"], ident=1))
+        op=Post(content=request.form["content"], ident=1))
     thread_key = thread.put()
 
     return render_template("posted.html", ident=thread.ident, return_url="show")

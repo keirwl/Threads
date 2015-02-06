@@ -3,6 +3,6 @@
 <body>
 Hi! Add a post <a href="add">here</a>.
 {% for thread in threads %}
-<li><h2><a href="{{ thread.ident }}">{{ thread.title }}</a>: {{ thread.opening_post.timestamp }}</h2>{{ thread.opening_post.content }}</li>
+<li><h2><a href="{{ thread.ident }}">{{ thread.title }}</a>: {{ thread.op.timestamp }}</h2>{{ thread.op.content }}</li>
 {% endfor %}
 </body>
