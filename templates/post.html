@@ -1,6 +1,5 @@
-<!doctype html>
-<title>Threads</title>
-<body>
+{% extends "layout.html" %}
+{% block body %}
 <form action="{{ url_for('add_thread') }}" method=post>
 	<dl>
 		<dt>Title:</dt>
@@ -12,4 +11,4 @@
 		<dd><input type=submit value=Post></dd>
 	</dl>
 </form>
-</body>
+{% endblock %}

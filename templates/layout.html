@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<head>
+	<title>Threads</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<div class="navbar">
+		<a href="{{ url_for('show') }}" id="title">Threads</a> <a href="{{ url_for('about') }}" id="menu_option">About</a>
+	</div>
+
+	<div class="content">
+		{% block body %}{% endblock %}
+	</div>
+</body>

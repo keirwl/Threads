@@ -1,0 +1,11 @@
+.navbar {
+	border-bottom: solid 1px black;
+}
+
+.navbar a {
+	text-decoration: none;
+}
+
+.navbar #title {
+	font-size: 24px;
+}

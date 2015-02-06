@@ -44,6 +44,10 @@ def show():
     threads = Thread.query()
     return render_template("show.html", threads=threads)
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 @app.route("/<thread_ident>")
 def show_thread(thread_ident):
     thread = Thread.query(Thread.ident == thread_ident).get()

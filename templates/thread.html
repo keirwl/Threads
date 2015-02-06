@@ -1,6 +1,5 @@
-<!doctype html>
-<title>Threads</title>
-<body>
+{% extends "layout.html" %}
+{% block body %}
 Thread {{ thread.ident }}
 <li><h2>{{ thread.title }}: {{ thread.op.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
 {% for post in posts %}
@@ -18,4 +17,4 @@ Thread {{ thread.ident }}
 		<dd><input type=submit value=Post></dd>
 	</dl>
 </form>
-</body>
+{% endblock %}
