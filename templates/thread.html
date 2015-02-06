@@ -2,9 +2,9 @@
 <title>Threads</title>
 <body>
 Thread {{ thread.ident }}
-<li><h2>{{ thread.title }}: {{ thread.op.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}</h2>{{ thread.op.content }}</li>
+<li><h2>{{ thread.title }}: {{ thread.op.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
 {% for post in posts %}
-<li><h3>{{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}</h3>{{ post.content }}</li>
+<li><h3>{{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ post.author }}</h3>{{ post.content }}</li>
 {% endfor %}
 <br>
 {{ thread.num_posts }}
@@ -12,7 +12,9 @@ Thread {{ thread.ident }}
 	<dl>
 		<dt>Text:</dt>
 		<dd><textarea name=content rows=5 cols=40></textarea></dd>
-		<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}">
+		<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}"></dd>
+		<dt>Author:</dt>
+		<dd><input type=text size=30 name=author></dd>
 		<dd><input type=submit value=Post></dd>
 	</dl>
 </form>

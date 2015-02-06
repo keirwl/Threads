@@ -3,6 +3,7 @@
 # Import the Flask Framework
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
+from hashlib import md5
 from os import urandom
 from google.appengine.ext import ndb
 app = Flask(__name__)
@@ -16,6 +17,7 @@ class Post(ndb.Model):
     ident = ndb.IntegerProperty()
     content = ndb.StringProperty(required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    author = ndb.StringProperty(required=True)
 
 class Thread(ndb.Model):
     ident = ndb.StringProperty(required=True)
@@ -29,6 +31,9 @@ def salt():
 
 def ident():
     return b32encode(urandom(5)).decode()
+
+def author_identity(passkey, salt):
+    return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]
 
 @app.route("/")
 def index():
@@ -49,9 +54,16 @@ def show_thread(thread_ident):
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
     thread_key = ndb.Key(urlsafe=request.form["urlkey"])
+    post = Post(content=request.form["content"], parent=thread_key)
     thread = thread_key.get()
+
+    if request.form["author"] == "":
+        post.author = "Anonymous"
+    else:
+        post.author = author_identity(request.form["author"], thread.salt)
+
+    post_key = post.put()
     thread.num_posts += 1
-    post_key = Post(content=request.form["content"], parent=thread_key).put()
     thread.put()
 
     return render_template("posted.html", ident="", return_url="../"+thread_ident)
@@ -64,6 +76,11 @@ def post_form():
 def add_thread():
     thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
         op=Post(content=request.form["content"], ident=1))
+
+    if request.form["author"] == "":
+        thread.op.author = "Anonymous"
+    else:
+        thread.op.author = author_identity(request.form["author"], thread.salt)
     thread_key = thread.put()
 
     return render_template("posted.html", ident=thread.ident, return_url="show")
