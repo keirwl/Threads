@@ -2,12 +2,12 @@
 <title>Threads</title>
 <body>
 Thread {{ thread.ident }}
-<li><h2>{{ thread.title }}: {{ thread.op.timestamp }}</h2>{{ thread.op.content }}</li>
+<li><h2>{{ thread.title }}: {{ thread.op.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}</h2>{{ thread.op.content }}</li>
 {% for post in posts %}
-<li><h3>{{ post.timestamp }}</h3>{{ post.content }}</li>
+<li><h3>{{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}</h3>{{ post.content }}</li>
 {% endfor %}
 <br>
-{{ num }}
+{{ thread.num_posts }}
 <form action="{{ thread.ident + '/post' }}" method=post>
 	<dl>
 		<dt>Text:</dt>
