@@ -1,8 +1,8 @@
 <!doctype html>
 <title>Threads</title>
 <body>
-Hi
-{% for post in posts %}
-<li><h2>{{ post.title }}: {{ post.timestamp }}</h2>{{ post.content }}</li>
+Hi! Add a post <a href="add">here</a>.
+{% for thread in threads %}
+<li><h2><a href="{{ thread.ident }}">{{ thread.title }}</a>: {{ thread.opening_post.timestamp }}</h2>{{ thread.opening_post.content }}</li>
 {% endfor %}
 </body>

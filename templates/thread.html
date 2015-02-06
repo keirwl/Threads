@@ -1,0 +1,15 @@
+<!doctype html>
+<title>Threads</title>
+<body>
+Thread {{ thread.ident }}
+<li><h2>{{ thread.title }}: {{ thread.opening_post.timestamp }}</h2>{{ thread.opening_post.content }}</li>
+
+<form action="{{ thread.ident + '/post' }}" method=post>
+	<dl>
+		<dt>Text:</dt>
+		<dd><textarea name=content rows=5 cols=40></textarea></dd>
+		<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}">
+		<dd><input type=submit value=Post></dd>
+	</dl>
+</form>
+</body>

@@ -1,7 +1,9 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
-from flask import Flask, request, render_template, flash, redirect, url_for
+from flask import Flask, request, render_template, flash, redirect, url_for, abort
+from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
+from os import urandom
 from google.appengine.ext import ndb
 app = Flask(__name__)
 app.debug = True
@@ -12,9 +14,20 @@ SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"
 
 class Post(ndb.Model):
     ident = ndb.IntegerProperty()
-    title = ndb.StringProperty(required=True)
     content = ndb.StringProperty(required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
+
+class Thread(ndb.Model):
+    ident = ndb.StringProperty(required=True)
+    salt = ndb.StringProperty(required=True)
+    title = ndb.StringProperty(required=True)
+    opening_post = ndb.StructuredProperty(Post, required=True)
+
+def salt():
+    return urlsafe_b64encode(urandom(64)).decode()
+
+def ident():
+    return b32encode(urandom(5)).decode()
 
 @app.route("/")
 def index():
@@ -22,19 +35,33 @@ def index():
 
 @app.route('/show')
 def show():
-    posts = Post.query()
-    return render_template("show.html", posts=posts)
+    threads = Thread.query()
+    return render_template("show.html", threads=threads)
+
+@app.route("/<thread_ident>")
+def show_thread(thread_ident):
+    thread = Thread.query(Thread.ident == thread_ident).get()
+    if thread == None: abort(404)
+    return render_template("thread.html", thread=thread)
+
+@app.route("/<thread_ident>/post", methods=["POST"])
+def add_post(thread_ident):
+    thread_key = ndb.Key(urlsafe=request.form["urlkey"])
+    post = Post(content=request.form["content"], parent=request.form["urlkey"])
+
+    return render_template("posted.html", ident="", return_url=thread_ident)
 
 @app.route("/add")
 def post_form():
     return render_template("post.html")
 
 @app.route("/post", methods=["POST"])
-def add_post():
-    post = Post(title=request.form["title"], content=request.form["content"])
-    post_key = post.put()
-    
-    return render_template("posted.html", post_key=post_key)
+def add_thread():
+    thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
+        opening_post=Post(content=request.form["content"], ident=1))
+    thread_key = thread.put()
+
+    return render_template("posted.html", ident=thread.ident, return_url="show")
 
 @app.errorhandler(404)
 def page_not_found(e):
