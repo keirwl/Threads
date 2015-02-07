@@ -1,3 +1,7 @@
+body {
+	font-family: "Geneva", "Verdana", sans-serif;
+}
+
 .navbar {
 	border-bottom: solid 1px black;
 	padding-bottom: 20px;

@@ -4,7 +4,7 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from hashlib import md5
-from os import urandom
+import os
 from google.appengine.ext import ndb
 app = Flask(__name__)
 app.debug = True
@@ -26,11 +26,24 @@ class Thread(ndb.Model):
     op = ndb.StructuredProperty(Post, required=True)
     num_posts = ndb.IntegerProperty(required=True, default=1)
 
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
 def salt():
-    return urlsafe_b64encode(urandom(64)).decode()
+    return urlsafe_b64encode(os.urandom(64)).decode()
 
 def ident():
-    return b32encode(urandom(5)).decode()
+    return b32encode(os.urandom(5)).decode()
 
 def author_identity(passkey, salt):
     return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]

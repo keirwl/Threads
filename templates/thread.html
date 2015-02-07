@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
 <script src="{{ url_for('static', filename='thread.js') }}"></script>
-Thread {{ thread.ident }}
-<li><h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
-
+<div class="thread_head">
+	<h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>
+</div>
 
 {% for post in posts %}
 <div class="post_head">
