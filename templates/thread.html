@@ -1,20 +1,33 @@
 {% extends "layout.html" %}
 {% block body %}
+<script src="{{ url_for('static', filename='thread.js') }}"></script>
 Thread {{ thread.ident }}
 <li><h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
+
+
 {% for post in posts %}
-<li><h3>{{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ post.author }}</h3>{{ post.content }}</li>
+<div class="post_head">
+	<h3>Posted at {{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ post.author }}</h3>
+</div>
+<div class="post_content">
+	<p>{{ post.content }}</p>
+</div>
 {% endfor %}
+
+
 <br>
 {{ thread.num_posts }}
-<form action="{{ thread.ident + '/post' }}" method=post>
-	<dl>
-		<dt>Text:</dt>
-		<dd><textarea name=content rows=5 cols=40></textarea></dd>
-		<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}"></dd>
-		<dt>Author:</dt>
-		<dd><input type=text size=30 name=author></dd>
-		<dd><input type=submit value=Post></dd>
-	</dl>
-</form>
+<input type="submit" >
+<div class="post_form">
+	<form action="{{ thread.ident + '/post' }}" method=post>
+		<dl>
+			<dt>Text:</dt>
+			<dd><textarea name=content rows=5 cols=40></textarea></dd>
+			<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}"></dd>
+			<dt>Author:</dt>
+			<dd><input type=text size=30 name=author></dd>
+			<dd><input type=submit value=Post></dd>
+		</dl>
+	</form>
+</div>
 {% endblock %}

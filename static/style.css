@@ -1,5 +1,6 @@
 .navbar {
 	border-bottom: solid 1px black;
+	padding-bottom: 20px;
 }
 
 .navbar a {
