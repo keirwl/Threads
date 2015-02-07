@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-Post {{ ident }} submitted. <a href="{{ return_url }}">Return.</a>
+Post {{ ident }} submitted. Click <a href="{{ return_url }}">here</a> to return or wait to be redirected.
+<script>
+	setTimeout(function() {
+		window.location.replace("{{ return_url }}")
+	}, 1000);
+</script>
 {% endblock %}
