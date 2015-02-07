@@ -70,7 +70,7 @@ def add_post(thread_ident):
     thread.num_posts += 1
     thread.put()
 
-    return render_template("posted.html", ident="", return_url="../"+thread_ident)
+    return redirect(url_for('show_thread', thread_ident=thread_ident))
 
 @app.route("/add")
 def post_form():
@@ -86,8 +86,8 @@ def add_thread():
     else:
         thread.op.author = author_identity(request.form["author"], thread.salt)
     thread_key = thread.put()
+    return render_template("posted.html", return_url=url_for('show_thread', thread_ident=thread.ident))
 
-    return render_template("posted.html", ident=thread.ident, return_url="show")
 
 @app.errorhandler(404)
 def page_not_found(e):

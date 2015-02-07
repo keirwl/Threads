@@ -1,0 +1,16 @@
+I'll consider Threads to be a working draft (i.e., something we can share with friends for beta testing and suggestions, a version 0.1, if you will) when:
+
+Layout - a clean front page displaying an infinitely-scrolling list of threads. I have nice minimal tumblr blogs like http://voyager3.tumblr.com/ in mind. A navbar at the top should contain links to the home page, an about page, and possibly a contact/suggestions page.
+On the home page, the OP of each thread should be displayed with a grid collage of any images in it, and info on the number of posts, a timestamp. and number of posters obscured as a range (1-5, 5-10, 10-20, 20+) to prevent de-anonymisation.
+Each thread layout should be quite similar to an imageboard's: each post has a header with timestamp, post id and poster identity if one is used. Images should be embedded as a small collage, each of which is a link to the full-size.
+
+Posts - should allow lots of characters, a generous amount of images (either by number or size) and markdown formatting.
+The form to add a post should have a "password"* box pre-filled with a random string and an "Anonymous?" checkbox, checked by default. If unchecked, the password plus a thread-specific salt is used to form a short hash which acts as that poster's identity.
+
+Threads - the opening post of a thread should allow a thread name and a number of tags** in addition to the above. Threads will appear on the home page in order of most-recently-posted in. A thread has no post limit (we may find we have to introduce one). It will be deleted after 7 days.
+
+I think that's about it. Post 0.1 features would include ability to search tags, tag pages, embed youtube/soundcloud/etc content, upload video and audio, replacement of "delete after 7 days" with "delete if there have been fewer than x posts per day over y days".
+
+* This isn't a password so much as an easily-memorable key that forms a poster's identity hash and allows deletion of posts, so we need a different name from "password", and it would probably best be pre-filled with two random words ("correct horse", "battery staple", etc.) rather than a fully-random string. A long random salt would be generated for each thread so that identities could not be brute-forced, and to ensure that they differe between threads even if the same password is used.
+
+** It could be useful to allow tags in each post, not just each thread opener: in a thread for pictures of horses, someone might want to tag their posts "Shetland pony" so that people can search within a thread for specific content.
