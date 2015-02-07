@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 Thread {{ thread.ident }}
-<li><h2>{{ thread.title }}: {{ thread.op.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
+<li><h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>{{ thread.op.content }}</li>
 {% for post in posts %}
 <li><h3>{{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ post.author }}</h3>{{ post.content }}</li>
 {% endfor %}
