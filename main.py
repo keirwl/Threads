@@ -1,6 +1,3 @@
-"""`main` is the top level module for your Flask application."""
-
-# Import the Flask Framework
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from hashlib import md5
@@ -9,7 +6,9 @@ from google.appengine.ext import ndb
 app = Flask(__name__)
 app.debug = True
 
+# I'm not sure why we need this, but we do
 SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"
+
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
@@ -26,6 +25,9 @@ class Thread(ndb.Model):
     op = ndb.StructuredProperty(Post, required=True)
     num_posts = ndb.IntegerProperty(required=True, default=1)
 
+# This and the next function override url_for to append the 
+# last updated time to static file urls, preventing browser
+# caching from being annoying during testing.
 @app.context_processor
 def override_url_for():
     return dict(url_for=dated_url_for)
@@ -40,19 +42,21 @@ def dated_url_for(endpoint, **values):
     return url_for(endpoint, **values)
 
 def salt():
-    return urlsafe_b64encode(os.urandom(64)).decode()
+    "Returns a random 64-bit number as a b64-encoded string."
+    return urlsafe_b64encode(os.urandom(8)).decode()
 
 def ident():
+    "Returns a random 8-char b32 string."
     return b32encode(os.urandom(5)).decode()
 
 def author_identity(passkey, salt):
     return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]
 
-@app.route("/")
-def index():
-    return redirect(url_for("show"))
+# @app.route("/")
+# def index():
+#     return redirect(url_for("show"))
 
-@app.route('/show')
+@app.route('/')
 def show():
     threads = Thread.query()
     return render_template("show.html", threads=threads)

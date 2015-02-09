@@ -7,8 +7,9 @@ body {
 	padding-bottom: 20px;
 }
 
-.navbar a {
+.navbar a, a:hover, a:active, a:visited {
 	text-decoration: none;
+	color: #101010;
 }
 
 .navbar #title {
