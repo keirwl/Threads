@@ -1,10 +1,12 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
+from flask_bootstrap import Bootstrap
+from google.appengine.ext import ndb
 from hashlib import md5
 import os
-from google.appengine.ext import ndb
 app = Flask(__name__)
 app.debug = True
+Bootstrap(app)
 
 # I'm not sure why we need this, but we do
 SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"
@@ -51,10 +53,6 @@ def ident():
 
 def author_identity(passkey, salt):
     return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]
-
-# @app.route("/")
-# def index():
-#     return redirect(url_for("show"))
 
 @app.route('/')
 def show():
