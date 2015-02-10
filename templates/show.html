@@ -1,9 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-Hi! Add a post <a href="add">here</a>.
+Hi! Add a post <a href="{{ url_for('add_thread') }}">here</a>.<br>
 {% if threads %}
 {% for thread in threads %}
-<li><h2><a href="{{ thread.ident }}">{{ thread.title }}</a>: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2><p>{{ thread.op.content }}</p></li>
+<div class="row">
+<div class="col-md-12">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title"><a href="{{ thread.ident }}">{{ thread.title }}</a></div>
+		</div>
+		<div class="panel-body">
+			{{ thread.op.content }}
+		</div>
+		<div class="panel-footer">
+			by {{ thread.op.author }} at {{ thread.op.timestamp }}
+		</div>
+	</div>
+</div>
+</div>
 {% endfor %}
 {% else %}
 <p>There are no threads yet. <a href="{{ url_for('post_form') }}">Add one</a>.</p>

@@ -1,16 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='thread.js') }}"></script>
-<div class="thread_head">
-	<h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>
+<div class="row">
+<div class="col-md-12">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title">{{ thread.title }}</div>
+		</div>
+		<div class="panel-body">
+			{{ thread.op.content }}
+		</div>
+		<div class="panel-footer">
+			by {{ thread.op.author }} at {{ thread.op.timestamp }}
+		</div>
+	</div>
 </div>
-
+</div>
 {% for post in posts %}
-<div class="post_head">
-	<h3>Posted at {{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }} by {{ post.author }}</h3>
+<div class="row">
+<div class="col-md-12">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			{{ post.content }}
+		</div>
+		<div class="panel-footer">
+			by {{ post.author }} at {{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}
+		</div>
+	</div>
 </div>
-<div class="post_content">
-	<p>{{ post.content }}</p>
 </div>
 {% endfor %}
 <input type="submit" >
@@ -26,4 +42,8 @@
 		</dl>
 	</form>
 </div>
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='thread.js') }}"></script>
+{% endblock %}
 {% endblock %}
