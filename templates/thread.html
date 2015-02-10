@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block body %}
+{% block content %}
 <script src="{{ url_for('static', filename='thread.js') }}"></script>
 <div class="thread_head">
 	<h2>{{ thread.title }}: {{ thread.op.timestamp }} by {{ thread.op.author }}</h2>
@@ -13,10 +13,6 @@
 	<p>{{ post.content }}</p>
 </div>
 {% endfor %}
-
-
-<br>
-{{ thread.num_posts }}
 <input type="submit" >
 <div class="post_form">
 	<form action="{{ thread.ident + '/post' }}" method=post>

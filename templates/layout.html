@@ -1,16 +1,18 @@
-<!DOCTYPE html>
-<head>
-	<title>Threads</title>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="{{ url_for('static', filename='home_script.js') }}"></script>
-</head>
-<body>
-	<div class="navbar">
-		<a href="{{ url_for('show') }}" id="title">Threads</a> <a href="{{ url_for('about') }}" id="menu_option">About</a>
+{% extends "bootstrap/base.html" %}
+{% block title %}Threads :: Anonymous Discussion Platform{% endblock %}
+{% block styles %}
+{{ super () }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block navbar %}
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+		<a href="{{ url_for('show') }}" class="navbar-brand">Threads</a>
+		<ul class="nav navbar-nav">
+			<li><a href="{{ url_for('about') }}">About</a></li>
+		</ul>
 	</div>
-
-	<div class="content">
-		{% block body %}{% endblock %}
-	</div>
-</body>
+</div>
+{% endblock %}
+{% block content -%}
+{%- endblock %}

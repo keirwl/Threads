@@ -1,17 +1,3 @@
 body {
-	font-family: "Geneva", "Verdana", sans-serif;
-}
-
-.navbar {
-	border-bottom: solid 1px black;
-	padding-bottom: 20px;
-}
-
-.navbar a, a:hover, a:active, a:visited {
-	text-decoration: none;
-	color: #101010;
-}
-
-.navbar #title {
-	font-size: 24px;
+	padding-top: 70px;
 }
