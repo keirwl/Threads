@@ -1,12 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-Hi! Add a post <a href="{{ url_for('post_form') }}">here</a>.<br>
-<script type="application/javascript">
-	function newThread(){
-		$("#form_space").toggle(500);
-		$("#form_intro").toggle(550);
-	}
-</script>
+<script src="{{ url_for('static', filename='show.js') }}">
 <p id="form_intro">Hi! Add a post <a onclick="newThread()">here</a>.</p>
 <div id="form_space" style="display: none">
 {% include 'post.html' %}
