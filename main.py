@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
-from flask_markdown import Markdown
+from flask_markdown import markdown
 from flask_bootstrap import Bootstrap
 from flask_wtf import Form
 from google.appengine.ext import ndb
@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 app.debug = True
 Bootstrap(app)
-Markdown(app)
+markdown(app)
 
 # I'm not sure why we need this, but we do
 SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"

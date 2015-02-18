@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
 Hi! Add a post <a href="{{ url_for('post_form') }}">here</a>.<br>
+<script type="application/javascript">
+	function newThread(){
+		$("#form_space").toggle(500);
+		$("#form_intro").toggle(550);
+	}
+</script>
+<p id="form_intro">Hi! Add a post <a onclick="newThread()">here</a>.</p>
+<div id="form_space" style="display: none">
+{% include 'post.html' %}
+</div>
 {% if threads %}
 {% for thread in threads %}
 <div class="row">
@@ -19,7 +29,5 @@ Hi! Add a post <a href="{{ url_for('post_form') }}">here</a>.<br>
 </div>
 </div>
 {% endfor %}
-{% else %}
-<p>There are no threads yet. <a href="{{ url_for('post_form') }}">Add one</a>.</p>
 {% endif %}
 {% endblock %}
