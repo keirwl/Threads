@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, flash, redirect, url_for, abo
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from flask_markdown import Markdown
 from flask_bootstrap import Bootstrap
+from flask_wtf import Form
 from google.appengine.ext import ndb
 from hashlib import md5
 import os

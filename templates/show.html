@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-Hi! Add a post <a href="{{ url_for('add_thread') }}">here</a>.<br>
+Hi! Add a post <a href="{{ url_for('post_form') }}">here</a>.<br>
 {% if threads %}
 {% for thread in threads %}
 <div class="row">
@@ -10,7 +10,7 @@ Hi! Add a post <a href="{{ url_for('add_thread') }}">here</a>.<br>
 			<div class="panel-title"><a href="{{ thread.ident }}">{{ thread.title }}</a></div>
 		</div>
 		<div class="panel-body">
-			{{ thread.op.content }}
+			{{ thread.op.content|markdown }}
 		</div>
 		<div class="panel-footer">
 			by {{ thread.op.author }} at {{ thread.op.timestamp }}
