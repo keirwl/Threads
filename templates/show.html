@@ -1,10 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='show.js') }}">
-<p id="form_intro">Hi! Add a post <a onclick="newThread()">here</a>.</p>
-<div id="form_space" style="display: none">
-{% include 'post.html' %}
-</div>
+Hi! Add a post <a href="{{ url_for('add_thread') }}">here</a>.<br>
 {% if threads %}
 {% for thread in threads %}
 <div class="row">
@@ -14,7 +10,7 @@
 			<div class="panel-title"><a href="{{ thread.ident }}">{{ thread.title }}</a></div>
 		</div>
 		<div class="panel-body">
-			{{ thread.op.content|markdown }}
+			{{ thread.op.content }}
 		</div>
 		<div class="panel-footer">
 			by {{ thread.op.author }} at {{ thread.op.timestamp }}

@@ -7,7 +7,7 @@
 			<div class="panel-title">{{ thread.title }}</div>
 		</div>
 		<div class="panel-body">
-			{{ thread.op.content|markdown }}
+			{{ thread.op.content }}
 		</div>
 		<div class="panel-footer">
 			by {{ thread.op.author }} at {{ thread.op.timestamp }}
@@ -20,7 +20,7 @@
 <div class="col-md-12">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			{{ post.content|markdown }}
+			{{ post.content }}
 		</div>
 		<div class="panel-footer">
 			by {{ post.author }} at {{ post.timestamp.strftime("%Y/%m/%d %H:%M:%S") }}
