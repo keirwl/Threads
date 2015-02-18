@@ -4,13 +4,14 @@
 <div class="col-md-12">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<div class="panel-title">{{ thread.title }}</div>
+			<div class="panel-title">{{ thread.title }}</div> <span class="thread-info">Replies: {{ thread.replies }}</span>
+
 		</div>
 		<div class="panel-body">
 			{{ thread.op.content }}
 		</div>
 		<div class="panel-footer">
-			by {{ thread.op.author }} at {{ thread.op.timestamp }}
+			<div class="poster-info">by {{ thread.op.author }} at {{ thread.op.timestamp }}</div>
 		</div>
 	</div>
 </div>

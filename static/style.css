@@ -4,6 +4,10 @@ body {
 	padding-right: 15px;
 }
 
-.panel-footer {
+.thread-info {
+	text-align: right;
+}
+
+.poster-info {
 	text-align: right;
 }

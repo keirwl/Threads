@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-Hi! Add a post <a href="{{ url_for('add_thread') }}">here</a>.<br>
+Hi! Add a post <a href="{{ url_for('post_form') }}">here</a>.<br>
 {% if threads %}
 {% for thread in threads %}
 <div class="row">
 <div class="col-md-12">
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<div class="panel-title"><a href="{{ thread.ident }}">{{ thread.title }}</a></div>
+			<div class="panel-title"><a href="{{ thread.ident }}">{{ thread.title }}</a></div> <span class="thread-info">Replies: {{ thread.replies }}</span>
 		</div>
 		<div class="panel-body">
 			{{ thread.op.content }}

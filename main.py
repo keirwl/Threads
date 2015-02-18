@@ -27,7 +27,7 @@ class Thread(ndb.Model):
     salt = ndb.StringProperty(required=True)
     title = ndb.StringProperty(required=True)
     op = ndb.StructuredProperty(Post, required=True)
-    num_posts = ndb.IntegerProperty(required=True, default=1)
+    replies = ndb.IntegerProperty(required=True, default=0)
 
 # This and the next function override url_for to append the 
 # last updated time to static file urls, preventing browser
@@ -70,7 +70,7 @@ def show_thread(thread_ident):
     thread = Thread.query(Thread.ident == thread_ident).get()
     if thread == None: abort(404)
     posts = Post.query(ancestor=thread.key).fetch()
-    return render_template("thread.html", thread=thread, posts=posts, num=len(posts))
+    return render_template("thread.html", thread=thread, posts=posts)
 
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
@@ -84,7 +84,7 @@ def add_post(thread_ident):
         post.author = author_identity(request.form["author"], thread.salt)
 
     post_key = post.put()
-    thread.num_posts += 1
+    thread.replies += 1
     thread.put()
 
     return redirect(url_for('show_thread', thread_ident=thread_ident))
