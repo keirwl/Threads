@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='show.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='show.js')}}">
+</script>
 <p id="form_intro" class="collapse in">Hi! Add a post <a onclick="newThread()">here</a>.</p>
-<div id="form_space" class="collapse" style="width:60%;">
+<div id="form_space" class="collapse" style="width:60%;margin-left:auto;margin-right:auto;margin-bottom:5%">
 {% include 'post.html' %}
 </div>
 {% if threads %}
