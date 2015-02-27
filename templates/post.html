@@ -1,11 +1,15 @@
 <form action="{{ url_for('add_thread') }}" method=post>
-	<dl>
-		<dt>Title:</dt>
-		<dd><input type=text size=30 name=title></dd>
-		<dt>Text:</dt>
-		<dd><textarea name=content rows=5 cols=40></textarea></dd>
-		<dt>Author:</dt>
-		<dd><input type=text size=30 name=author></dd>
-		<dd><input type=submit value=Post></dd>
-	</dl>
+	<div class="form-group">
+		<label for="title">Title:</label>
+		<input class="form-control" type=text size=30 name=title required>
+	</div>
+	<div class="form-group">
+		<label for="content">Text:</label>
+		<textarea class="form-control" name=content rows=5 cols=40 required>
+	</div>
+	<div class="form-group">
+		<label for="author">Author:</label>
+		<input class="form-control" type=text size=30 name=author>
+	</div>
+	<button class="btn btn-primary" type="submit">Post</button>
 </form>

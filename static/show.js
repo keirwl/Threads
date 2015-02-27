@@ -1,4 +1,4 @@
-function new_thread() {
-		$("#form_space").toggle(500);
-		$("#form_intro").toggle(550);
+function newThread() {
+		$("#form_space").collapse('toggle');
+		$("#form_intro").collapse('toggle');
 	}

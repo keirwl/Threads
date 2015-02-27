@@ -29,17 +29,19 @@
 </div>
 </div>
 {% endfor %}
-<input type="submit" >
-<div class="post_form">
+<div class="post_form" style="width:50%">
+	<h4>Reply:</h4>
 	<form action="{{ thread.ident + '/post' }}" method=post>
-		<dl>
-			<dt>Text:</dt>
-			<dd><textarea name=content rows=5 cols=40></textarea></dd>
-			<dd><input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}"></dd>
-			<dt>Author:</dt>
-			<dd><input type=text size=30 name=author></dd>
-			<dd><input type=submit value=Post></dd>
-		</dl>
+		<input type=hidden name=urlkey value="{{ thread.key.urlsafe() }}">
+		<div class="form-group">
+			<label for="content">Text:</label>
+			<textarea class="form-control" name=content rows=5 cols=40 required></textarea>
+		</div>
+		<div class="form-group">
+			<label for="author">Author:</label>
+			<input class="form-control" type=text size=30 name=author placeholder="Anonymous">
+		</div>
+		<button class="btn btn-primary" type="submit">Post</button>
 	</form>
 </div>
 {% block scripts %}
