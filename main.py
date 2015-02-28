@@ -83,7 +83,6 @@ def show():
     threads = Thread.query()
     return render_template("show.html", threads=threads, upload_url=upload_url)
 
-# This doesn't need to be handled through Flask, can be set in app.yaml
 @app.route("/about")
 def about():
     return render_template("about.html")
