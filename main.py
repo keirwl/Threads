@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from werkzeug import parse_options_header
+from werkzeug.exceptions import BadRequestKeyError
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from flask_markdown import markdown
 from flask_bootstrap import Bootstrap
@@ -80,13 +81,17 @@ def show_thread(thread_ident):
 
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
-    blob_file = request.files["file"]
-    print blob_file
-    header = parse_options_header(blob_file.headers["Content-Type"])
-    blob_key = blobstore.BlobKey(header[1]["blob-key"])
     thread_key = ndb.Key(urlsafe=request.form["urlkey"])
 
-    post = Post(content=request.form["content"], parent=thread_key, image=blob_key)
+    try:
+        blob_file = request.files["file"]
+    except BadRequestKeyError:
+        post = Post(content=request.form["content"], parent=thread_key)
+    else:
+        header = parse_options_header(blob_file.headers["Content-Type"])
+        blob_key = blobstore.BlobKey(header[1]["blob-key"])
+        post = Post(content=request.form["content"], parent=thread_key, image=blob_key)
+
     thread = thread_key.get()
 
     if request.form["author"] == "":
@@ -106,17 +111,23 @@ def post_form():
 
 @app.route("/post", methods=["POST"])
 def add_thread():
-    blob_file = request.files["file"]
-    header = parse_options_header(blob_file.headers["Content-Type"])
-    blob_key = blobstore.BlobKey(header[1]["blob-key"])
-    thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
-        op=Post(content=request.form["content"], ident=1, image=blob_key))
+    try:
+        blob_file = request.files["file"]
+    except BadRequestKeyError:
+        thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
+            op=Post(content=request.form["content"], ident=1))
+    else:
+        header = parse_options_header(blob_file.headers["Content-Type"])
+        blob_key = blobstore.BlobKey(header[1]["blob-key"])
+        thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
+            op=Post(content=request.form["content"], ident=1, image=blob_key))
 
     if request.form["author"] == "":
         thread.op.author = "Anonymous"
     else:
         thread.op.author = author_identity(request.form["author"], thread.salt)
     thread_key = thread.put()
+
     return render_template("posted.html", return_url=url_for('show_thread', thread_ident=thread.ident))
 
 
