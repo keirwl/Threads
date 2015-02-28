@@ -1,10 +1,10 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
-from werkzeug import parse_options_header
-from werkzeug.exceptions import BadRequestKeyError
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
-from flask_markdown import markdown
-from flask_bootstrap import Bootstrap
 from google.appengine.ext import ndb, blobstore
+from werkzeug.exceptions import BadRequestKeyError
+from werkzeug import parse_options_header
+from flask_bootstrap import Bootstrap
+from flask_markdown import Markdown
 from hashlib import md5
 import os
 
@@ -21,6 +21,8 @@ SECRET_KEY = "b18d7a3ffb55304f3c904c38449072f16d18c8c36ee2c458f271a4e5396572a8"
 # the App Engine WSGI application server.
 
 class Post(ndb.Model):
+    # post idents are currently useless, in the future
+    # will be used for linking and @ replies
     ident = ndb.IntegerProperty()
     content = ndb.StringProperty(required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
@@ -37,6 +39,7 @@ class Thread(ndb.Model):
 # This and the following function override url_for to append the 
 # last updated time to static file urls, preventing browser
 # caching from being annoying during testing.
+# Probably should be removed in production!
 @app.context_processor
 def override_url_for():
     return dict(url_for=dated_url_for)
@@ -59,7 +62,20 @@ def ident():
     return b32encode(os.urandom(5)).decode()
 
 def author_identity(passkey, salt):
+    "Identities the first 8 characters of the hased pass key and thread salt."
     return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]
+
+def check_file_upload(request):
+    # This can later be expanded to check file size, type, etc.
+    "Checks if a file was uploaded. Returns the BlobKey if so or None if not."
+    try:
+        blob_file = request.files["file"]
+    except BadRequestKeyError:
+        return None
+    else:
+        # Copied with little understanding from https://gist.github.com/merqurio/c0b62eb1e1769317907f
+        headers = parse_options_header(blob_file.headers["Content-Type"])
+        return blobstore.BlobKey(headers[1]["blob-key"])
 
 @app.route('/')
 def show():
@@ -67,30 +83,28 @@ def show():
     threads = Thread.query()
     return render_template("show.html", threads=threads, upload_url=upload_url)
 
+# This doesn't need to be handled through Flask, can be set in app.yaml
 @app.route("/about")
 def about():
     return render_template("about.html")
 
-@app.route("/<thread_ident>")
+@app.route("/<thread_ident>") # This will handle any /string url, hence checking for thread
 def show_thread(thread_ident):
     upload_url = blobstore.create_upload_url("/"+thread_ident+"/post")
     thread = Thread.query(Thread.ident == thread_ident).get()
     if thread == None: abort(404)
+
     posts = Post.query(ancestor=thread.key).fetch()
     return render_template("thread.html", thread=thread, posts=posts, upload_url=upload_url)
 
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
     thread_key = ndb.Key(urlsafe=request.form["urlkey"])
+    post = Post(content=request.form["content"], parent=thread_key)
+    blob_key = check_file_upload(request)
 
-    try:
-        blob_file = request.files["file"]
-    except BadRequestKeyError:
-        post = Post(content=request.form["content"], parent=thread_key)
-    else:
-        header = parse_options_header(blob_file.headers["Content-Type"])
-        blob_key = blobstore.BlobKey(header[1]["blob-key"])
-        post = Post(content=request.form["content"], parent=thread_key, image=blob_key)
+    if blob_key is not None:
+        post.image = blob_key
 
     thread = thread_key.get()
 
@@ -105,22 +119,15 @@ def add_post(thread_ident):
 
     return redirect(url_for('show_thread', thread_ident=thread_ident))
 
-@app.route("/add")
-def post_form():
-    return render_template("post.html")
-
 @app.route("/post", methods=["POST"])
 def add_thread():
-    try:
-        blob_file = request.files["file"]
-    except BadRequestKeyError:
-        thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
+    thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
             op=Post(content=request.form["content"], ident=1))
-    else:
-        header = parse_options_header(blob_file.headers["Content-Type"])
-        blob_key = blobstore.BlobKey(header[1]["blob-key"])
-        thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
-            op=Post(content=request.form["content"], ident=1, image=blob_key))
+    
+    blob_key = check_file_upload(request)
+
+    if blob_key is not None:
+        thread.op.image = blob_key
 
     if request.form["author"] == "":
         thread.op.author = "Anonymous"
@@ -130,14 +137,13 @@ def add_thread():
 
     return render_template("posted.html", return_url=url_for('show_thread', thread_ident=thread.ident))
 
-
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
     return 'Sorry, nothing at this URL.', 404
 
-
 @app.errorhandler(500)
 def page_not_found(e):
     """Return a custom 500 error."""
     return 'Sorry, unexpected error: {}'.format(e), 500
+
