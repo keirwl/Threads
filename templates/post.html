@@ -1,4 +1,4 @@
-<form action="{{ url_for('add_thread') }}" method=post>
+<form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
 	<div class="form-group">
 		<label for="title">Title:</label>
 		<input class="form-control" type=text size=30 name=title required>
@@ -8,8 +8,12 @@
 		<textarea class="form-control" name=content rows=5 cols=40 required></textarea>
 	</div>
 	<div class="form-group">
+		<label for="file">Image:</label>
+		<input class="form-control" type="file" name="file">
+	</div>
+	<div class="form-group">
 		<label for="author">Author:</label>
-		<input class="form-control" type=text size=30 name=author>
+		<input class="form-control" type=text size=30 name=author placeholder="Anonymous">
 	</div>
 	<button class="btn btn-primary" type="submit">Post</button>
 </form>

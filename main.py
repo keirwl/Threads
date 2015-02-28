@@ -1,12 +1,15 @@
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
+from werkzeug import parse_options_header
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from flask_markdown import markdown
 from flask_bootstrap import Bootstrap
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, blobstore
 from hashlib import md5
 import os
+
+# Initialisation
 app = Flask(__name__)
-app.debug = True
+app.debug = True # Make sure to change before going live!
 Bootstrap(app)
 markdown(app)
 
@@ -21,6 +24,7 @@ class Post(ndb.Model):
     content = ndb.StringProperty(required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
     author = ndb.StringProperty(required=True)
+    image = ndb.BlobKeyProperty()
 
 class Thread(ndb.Model):
     ident = ndb.StringProperty(required=True)
@@ -29,7 +33,7 @@ class Thread(ndb.Model):
     op = ndb.StructuredProperty(Post, required=True)
     replies = ndb.IntegerProperty(required=True, default=0)
 
-# This and the next function override url_for to append the 
+# This and the following function override url_for to append the 
 # last updated time to static file urls, preventing browser
 # caching from being annoying during testing.
 @app.context_processor
@@ -58,8 +62,9 @@ def author_identity(passkey, salt):
 
 @app.route('/')
 def show():
+    upload_url = blobstore.create_upload_url("/post")
     threads = Thread.query()
-    return render_template("show.html", threads=threads)
+    return render_template("show.html", threads=threads, upload_url=upload_url)
 
 @app.route("/about")
 def about():
@@ -67,15 +72,21 @@ def about():
 
 @app.route("/<thread_ident>")
 def show_thread(thread_ident):
+    upload_url = blobstore.create_upload_url("/"+thread_ident+"/post")
     thread = Thread.query(Thread.ident == thread_ident).get()
     if thread == None: abort(404)
     posts = Post.query(ancestor=thread.key).fetch()
-    return render_template("thread.html", thread=thread, posts=posts)
+    return render_template("thread.html", thread=thread, posts=posts, upload_url=upload_url)
 
 @app.route("/<thread_ident>/post", methods=["POST"])
 def add_post(thread_ident):
+    blob_file = request.files["file"]
+    print blob_file
+    header = parse_options_header(blob_file.headers["Content-Type"])
+    blob_key = blobstore.BlobKey(header[1]["blob-key"])
     thread_key = ndb.Key(urlsafe=request.form["urlkey"])
-    post = Post(content=request.form["content"], parent=thread_key)
+
+    post = Post(content=request.form["content"], parent=thread_key, image=blob_key)
     thread = thread_key.get()
 
     if request.form["author"] == "":
@@ -95,8 +106,11 @@ def post_form():
 
 @app.route("/post", methods=["POST"])
 def add_thread():
+    blob_file = request.files["file"]
+    header = parse_options_header(blob_file.headers["Content-Type"])
+    blob_key = blobstore.BlobKey(header[1]["blob-key"])
     thread = Thread(ident=ident(), salt=salt(), title=request.form["title"],
-        op=Post(content=request.form["content"], ident=1))
+        op=Post(content=request.form["content"], ident=1, image=blob_key))
 
     if request.form["author"] == "":
         thread.op.author = "Anonymous"
