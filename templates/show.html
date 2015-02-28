@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div class="panel-body">
-			{{ thread.op.content }}
+			{{ thread.op.content|markdown }}
 		</div>
 		<div class="panel-footer">
 			by {{ thread.op.author }} at {{ thread.op.timestamp }}
