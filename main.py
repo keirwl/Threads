@@ -63,7 +63,7 @@ def ident():
     return b32encode(os.urandom(5)).decode()
 
 def author_identity(passkey, salt):
-    "Identities the first 8 characters of the hased pass key and thread salt."
+    "Identities are the first 8 characters of the hashed pass key and thread salt."
     return urlsafe_b64encode(md5(passkey+salt).digest()).decode()[:8]
 
 def check_file_upload(request):
@@ -90,6 +90,7 @@ def about():
 
 @app.route("/<thread_ident>") # This will handle any /string url, hence checking for thread
 def show_thread(thread_ident):
+    # Checking if thread_ident is 8-char and base32 should probably be done before querying
     upload_url = blobstore.create_upload_url("/"+thread_ident+"/post")
     thread = Thread.query(Thread.ident == thread_ident).get()
     if thread == None: abort(404)
