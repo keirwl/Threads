@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, flash, redirect, url_for, abo
 from base64 import b32encode, urlsafe_b64encode, urlsafe_b64decode
 from google.appengine.ext import ndb, blobstore
 from werkzeug.exceptions import BadRequestKeyError
+from google.appengine.api import images
 from werkzeug import parse_options_header
 from flask_bootstrap import Bootstrap
 from flask_markdown import Markdown
