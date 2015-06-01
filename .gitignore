@@ -9,3 +9,5 @@ markupsafe*
 werkzeug*
 wtforms*
 markdown*
+*.egg-info
+*.dist-info
